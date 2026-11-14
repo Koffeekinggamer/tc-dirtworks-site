@@ -1,4 +1,4 @@
-/* T. C. Dirtworks quote form and small UI helpers.
+/* T. C. Dirtworks quote form and interface.
    FORM_ENDPOINT:
      ""  -> demo mode. Submit opens a mailto: to info@tcdirtworks.com.
      A Formspree (or compatible) URL -> POST the form there instead.
@@ -6,15 +6,30 @@
 */
 const FORM_ENDPOINT = "";
 const ESTIMATE_EMAIL = "info@tcdirtworks.com";
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const headerQuery = () => document.documentElement.classList.toggle("is-compact", window.scrollY > 16);
+headerQuery();
+window.addEventListener("scroll", headerQuery, { passive: true });
 
 const menuToggle = document.querySelector(".menu-toggle");
 const siteNav = document.querySelector("#site-nav");
+const scrim = document.querySelector(".nav-scrim");
+let lastFocus = null;
 
 function setMenu(open) {
   if (!menuToggle || !siteNav) return;
   menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
   menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
   siteNav.classList.toggle("is-open", open);
+  document.body.classList.toggle("nav-open", open);
+  if (open) {
+    lastFocus = document.activeElement;
+    const first = siteNav.querySelector("a, button");
+    if (first) first.focus();
+  } else if (lastFocus && typeof lastFocus.focus === "function") {
+    lastFocus.focus();
+  }
 }
 
 if (menuToggle && siteNav) {
@@ -26,19 +41,31 @@ if (menuToggle && siteNav) {
     if (event.target.closest("a")) setMenu(false);
   });
 
+  if (scrim) scrim.addEventListener("click", () => setMenu(false));
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setMenu(false);
+    if (event.key !== "Tab" || !siteNav.classList.contains("is-open")) return;
+    const focusable = [...siteNav.querySelectorAll("a, button")];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 1040) setMenu(false);
+    if (window.innerWidth > 959) setMenu(false);
   });
 }
 
 document.querySelectorAll("[data-placeholder-link]").forEach((link) => {
-  link.addEventListener("click", (event) => {
-    event.preventDefault();
-  });
+  link.addEventListener("click", (event) => event.preventDefault());
 });
 
 const callDock = document.querySelector(".call-dock");
@@ -51,6 +78,87 @@ if (callDock && quoteForm) {
   });
 }
 
+const reveals = document.querySelectorAll(".reveal");
+if (reduceMotion || !("IntersectionObserver" in window)) {
+  reveals.forEach((el) => el.classList.add("is-inview"));
+} else {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-inview");
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.14, rootMargin: "0px 0px -8% 0px" }
+  );
+  reveals.forEach((el) => observer.observe(el));
+}
+
+const lightbox = document.querySelector("#lightbox");
+const lightboxCopy = document.querySelector("#lightbox-copy");
+const lightboxClose = document.querySelector("#lightbox-close");
+
+document.querySelectorAll(".shot").forEach((shot) => {
+  shot.addEventListener("click", () => {
+    if (!lightbox || !lightboxCopy) return;
+    const slot = shot.dataset.slot || "";
+    lightboxCopy.textContent = `Slot ${slot} is reserved for a T. C. Dirtworks project photo. No company photo is available for this frame yet.`;
+    if (typeof lightbox.showModal === "function") lightbox.showModal();
+    else lightbox.setAttribute("open", "");
+  });
+});
+
+if (lightbox && lightboxClose) {
+  lightboxClose.addEventListener("click", () => lightbox.close());
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) lightbox.close();
+  });
+}
+
+const rules = {
+  name: (value) => (value.trim().length >= 2 ? "" : "Enter your name."),
+  phone: (value) => (value.replace(/\D/g, "").length >= 7 ? "" : "Enter a phone number."),
+  email: (value) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "" : "Enter a valid email address."),
+  job_site: (value) => (value.trim().length >= 3 ? "" : "Enter the job site or address."),
+  service: (value) => (value ? "" : "Select a service."),
+  contact_method: (value) => (value ? "" : "Select how you prefer to be contacted."),
+};
+
+function fieldElement(form, key) {
+  return form.querySelector(`[name="${key}"]`);
+}
+
+function showError(input, message) {
+  const field = input.closest(".field");
+  const error = field ? field.querySelector(".field-error") : null;
+  if (!field || !error) return;
+  field.classList.toggle("is-invalid", Boolean(message));
+  input.setAttribute("aria-invalid", message ? "true" : "false");
+  error.hidden = !message;
+  error.textContent = message;
+}
+
+function validateField(form, key) {
+  const input = fieldElement(form, key);
+  if (!input || !rules[key]) return true;
+  const message = rules[key](input.value || "");
+  showError(input, message);
+  return !message;
+}
+
+function validateForm(form) {
+  let firstInvalid = null;
+  Object.keys(rules).forEach((key) => {
+    const input = fieldElement(form, key);
+    const message = rules[key]((input && input.value) || "");
+    if (input) showError(input, message);
+    if (message && !firstInvalid) firstInvalid = input;
+  });
+  if (firstInvalid) firstInvalid.focus();
+  return !firstInvalid;
+}
+
 const demoNote = document.querySelector("#form-note");
 const submitButton = quoteForm ? quoteForm.querySelector("[type='submit']") : null;
 if (FORM_ENDPOINT) {
@@ -60,20 +168,38 @@ if (FORM_ENDPOINT) {
 
 if (quoteForm) {
   const status = document.querySelector("#form-status");
+  const success = document.querySelector("#form-success");
+  const successCopy = document.querySelector("#form-success-copy");
+  const resetButton = document.querySelector("#form-reset");
+
+  Object.keys(rules).forEach((key) => {
+    const input = fieldElement(quoteForm, key);
+    if (!input) return;
+    input.addEventListener("blur", () => validateField(quoteForm, key));
+    input.addEventListener("input", () => {
+      if (input.getAttribute("aria-invalid") === "true") validateField(quoteForm, key);
+    });
+  });
+
+  if (resetButton && success) {
+    resetButton.addEventListener("click", () => {
+      success.hidden = true;
+      quoteForm.hidden = false;
+      const name = fieldElement(quoteForm, "name");
+      if (name) name.focus();
+    });
+  }
 
   quoteForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-
-    if (!quoteForm.checkValidity()) {
-      quoteForm.reportValidity();
-      return;
-    }
+    if (status) status.textContent = "";
+    if (!validateForm(quoteForm)) return;
 
     const data = new FormData(quoteForm);
     if ((data.get("_gotcha") || "").toString().trim() !== "") return;
 
-    const submitButton = quoteForm.querySelector("[type='submit']");
-    if (submitButton) submitButton.disabled = true;
+    const button = quoteForm.querySelector("[type='submit']");
+    if (button) button.disabled = true;
 
     try {
       if (FORM_ENDPOINT) {
@@ -84,9 +210,7 @@ if (quoteForm) {
         });
         if (!response.ok) throw new Error("Request failed");
         quoteForm.reset();
-        if (status) {
-          status.textContent = "Request sent to T. C. Dirtworks.";
-        }
+        showSuccess("Request sent to T. C. Dirtworks.");
       } else {
         const name = value(data, "name");
         const body = [
@@ -99,20 +223,31 @@ if (quoteForm) {
           `Service: ${value(data, "service")}`,
           `Preferred contact method: ${value(data, "contact_method")}`,
         ].join("\n");
-        const href = `mailto:${ESTIMATE_EMAIL}?subject=${encodeURIComponent(`Free estimate request — ${name}`)}&body=${encodeURIComponent(body)}`;
-        window.location.href = href;
-        if (status) {
-          status.textContent = `Your email app should open with this request addressed to ${ESTIMATE_EMAIL}. If it does not, email that address directly. This demo form does not store or send the message on its own.`;
-        }
+        window.location.href = `mailto:${ESTIMATE_EMAIL}?subject=${encodeURIComponent(`Free estimate request — ${name}`)}&body=${encodeURIComponent(body)}`;
+        showSuccess(`Your email app should open with this request addressed to ${ESTIMATE_EMAIL}. If it does not, email that address directly. This demo form does not store or send the message on its own.`);
       }
     } catch (error) {
-      if (status) {
-        status.textContent = `The form could not be sent. Email ${ESTIMATE_EMAIL} or call 854-275-9644 instead.`;
-      }
+      if (status) status.textContent = `The form could not be sent. Email ${ESTIMATE_EMAIL} or call 854-275-9644 instead.`;
     } finally {
-      if (submitButton) submitButton.disabled = false;
+      if (button) button.disabled = false;
     }
   });
+
+  function showSuccess(message) {
+    if (success && successCopy) {
+      successCopy.textContent = message;
+      quoteForm.hidden = true;
+      success.hidden = false;
+      success.querySelector("h3").focus?.();
+      const heading = success.querySelector("h3");
+      if (heading) {
+        heading.setAttribute("tabindex", "-1");
+        heading.focus();
+      }
+    } else if (status) {
+      status.textContent = message;
+    }
+  }
 }
 
 function value(data, key) {
