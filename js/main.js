@@ -142,13 +142,18 @@ if (!reduceMotion) {
 
 const lightbox = document.querySelector("#lightbox");
 const lightboxCopy = document.querySelector("#lightbox-copy");
+const lightboxPhoto = document.querySelector("#lightbox-photo");
 const lightboxClose = document.querySelector("#lightbox-close");
 
 document.querySelectorAll(".shot").forEach((shot) => {
   shot.addEventListener("click", () => {
     if (!lightbox || !lightboxCopy) return;
-    const slot = shot.dataset.slot || "";
-    lightboxCopy.textContent = `Slot ${slot} is reserved for a T. C. Dirtworks project photo. No company photo is available for this frame yet.`;
+    const photo = shot.querySelector("img");
+    if (lightboxPhoto && photo) {
+      lightboxPhoto.src = photo.currentSrc || photo.src;
+      lightboxPhoto.alt = photo.alt;
+    }
+    lightboxCopy.textContent = "Placeholder image only. This is not a finished T. C. Dirtworks project.";
     if (typeof lightbox.showModal === "function") lightbox.showModal();
     else lightbox.setAttribute("open", "");
   });
