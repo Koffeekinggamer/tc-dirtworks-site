@@ -29,7 +29,7 @@
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
   <link rel="preload" href="fonts/instrument-serif-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="images/hero/kubota-rural-1280.webp 1280w, images/hero/kubota-rural-1600.webp 1600w, images/hero/kubota-rural-2560.webp 2560w" imagesizes="(min-width: 960px) 50vw, 100vw">
-  <link rel="stylesheet" href="css/styles.css?v=20261114p">
+  <link rel="stylesheet" href="css/styles.css?v=20261114q">
   <script>document.documentElement.classList.add("js");</script>
   <script type="application/ld+json">
   {
@@ -455,14 +455,10 @@
         <p><a href="mailto:info@tcdirtworks.com">info@tcdirtworks.com</a></p>
       </div>
       <div class="estimate-form-wrap">
-        <!-- Demo form. To use Formspree later, set FORM_ENDPOINT in js/main.js. -->
         <div id="form-success" class="form-success" hidden>
-          <p class="trust-kicker">Demo form</p>
-          <h3>Request ready to email</h3>
-          <p id="form-success-copy"></p>
-          <button class="btn btn-ghost" type="button" id="form-reset">Edit the request</button>
+          <h3 id="quote-thanks">Thanks, we got your request and will be in touch soon.</h3>
         </div>
-        <form id="quote-form" action="mailto:info@tcdirtworks.com" method="post" enctype="text/plain" novalidate>
+        <form id="quote-form" action="https://formsubmit.co/ajax/info@tcdirtworks.com" method="post" novalidate>
           <p class="form-hint">Required fields are marked with an asterisk.</p>
           <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
           <div class="form-grid">
@@ -513,11 +509,15 @@
               <p class="field-error" id="service-error" hidden></p>
             </div>
           </div>
+          <input type="hidden" name="_subject" value="Free estimate request">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="https://tcdirtworks.com/#quote-thanks">
           <p class="hp" aria-hidden="true">
-            <label>Leave this field empty <input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label>
+            <label>Leave this field empty <input name="_honey" type="text" tabindex="-1" autocomplete="off"></label>
           </p>
           <div class="form-actions">
-            <button class="btn" type="submit">Email this estimate request</button>
+            <button class="btn" type="submit">Send estimate request</button>
             <p class="form-helper">Sends your request to info@tcdirtworks.com.</p>
           </div>
         </form>
@@ -598,6 +598,6 @@
       }
     </style>
   </noscript>
-  <script src="js/main.js?v=20261114o"></script>
+  <script src="js/main.js?v=20261114q"></script>
 </body>
 </html>

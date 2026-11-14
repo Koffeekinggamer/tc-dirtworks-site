@@ -28,7 +28,7 @@ GitHub Pages serves this site at `https://tcdirtworks.com`. DNS for the apex and
 
 ## Quote form
 
-The estimate form is a demo. Submitting it opens a `mailto:` to `info@tcdirtworks.com`.
+The estimate form posts to FormSubmit at `info@tcdirtworks.com`. It does not open the visitor's email app. The contact links elsewhere on the page still use `mailto:`.
 
 To switch to Formspree (or any endpoint that accepts `FormData`), set `FORM_ENDPOINT` at the top of `js/main.js`:
 

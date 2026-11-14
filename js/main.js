@@ -1,11 +1,7 @@
 /* T. C. Dirtworks quote form and interface.
-   FORM_ENDPOINT:
-     ""  -> demo mode. Submit opens a mailto: to info@tcdirtworks.com.
-     A Formspree (or compatible) URL -> POST the form there instead.
-   To go live, set FORM_ENDPOINT and nothing else in this file needs to change.
+   The estimate form posts JSON to FormSubmit. It does not open an email app.
 */
-const FORM_ENDPOINT = "";
-const ESTIMATE_EMAIL = "info@tcdirtworks.com";
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/info@tcdirtworks.com";
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const headerQuery = () => document.documentElement.classList.toggle("is-compact", window.scrollY > 16);
@@ -211,18 +207,14 @@ function validateForm(form) {
   return !firstInvalid;
 }
 
-const demoNote = document.querySelector("#form-note");
-const submitButton = quoteForm ? quoteForm.querySelector("[type='submit']") : null;
-if (FORM_ENDPOINT) {
-  if (demoNote) demoNote.textContent = "Sending this form delivers the request to T. C. Dirtworks.";
-  if (submitButton) submitButton.textContent = "Send estimate request";
-}
-
 if (quoteForm) {
   const status = document.querySelector("#form-status");
   const success = document.querySelector("#form-success");
-  const successCopy = document.querySelector("#form-success-copy");
-  const resetButton = document.querySelector("#form-reset");
+
+  if (location.hash === "#quote-thanks" && success) {
+    quoteForm.hidden = true;
+    success.hidden = false;
+  }
 
   Object.keys(rules).forEach((key) => {
     const input = fieldElement(quoteForm, key);
@@ -233,71 +225,58 @@ if (quoteForm) {
     });
   });
 
-  if (resetButton && success) {
-    resetButton.addEventListener("click", () => {
-      success.hidden = true;
-      quoteForm.hidden = false;
-      const name = fieldElement(quoteForm, "name");
-      if (name) name.focus();
-    });
-  }
-
   quoteForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (status) status.textContent = "";
     if (!validateForm(quoteForm)) return;
 
     const data = new FormData(quoteForm);
-    if ((data.get("_gotcha") || "").toString().trim() !== "") return;
+    if (value(data, "_honey") !== "") return;
 
     const button = quoteForm.querySelector("[type='submit']");
     if (button) button.disabled = true;
 
+    const name = value(data, "name");
     try {
-      if (FORM_ENDPOINT) {
-        const response = await fetch(FORM_ENDPOINT, {
-          method: "POST",
-          headers: { Accept: "application/json" },
-          body: data,
-        });
-        if (!response.ok) throw new Error("Request failed");
-        quoteForm.reset();
-        showSuccess("Request sent to T. C. Dirtworks.");
-      } else {
-        const name = value(data, "name");
-        const body = [
-          "Free estimate request for T. C. Dirtworks",
-          "",
-          `Name: ${name}`,
-          `Phone: ${value(data, "phone")}`,
-          `Email: ${value(data, "email")}`,
-          `Job site: ${value(data, "job_site")}`,
-          `Service: ${value(data, "service")}`,
-          `Preferred contact method: ${value(data, "contact_method")}`,
-        ].join("\n");
-        window.location.href = `mailto:${ESTIMATE_EMAIL}?subject=${encodeURIComponent(`Free estimate request — ${name}`)}&body=${encodeURIComponent(body)}`;
-        showSuccess(`Your email app should open with this request addressed to ${ESTIMATE_EMAIL}. If it does not, email that address directly. This demo form does not store or send the message on its own.`);
-      }
+      const response = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          phone: value(data, "phone"),
+          email: value(data, "email"),
+          contact_method: value(data, "contact_method"),
+          job_site: value(data, "job_site"),
+          service: value(data, "service"),
+          _subject: `Free estimate request — ${name}`,
+          _template: "table",
+          _captcha: "false",
+          _honey: "",
+        }),
+      });
+      if (!response.ok) throw new Error("Request failed");
+      quoteForm.reset();
+      showSuccess();
     } catch (error) {
-      if (status) status.textContent = `The form could not be sent. Email ${ESTIMATE_EMAIL} or call 854-275-9644 instead.`;
-    } finally {
+      if (status) status.textContent = "We couldn't send your request. Call 854-275-9644.";
       if (button) button.disabled = false;
     }
   });
 
-  function showSuccess(message) {
-    if (success && successCopy) {
-      successCopy.textContent = message;
+  function showSuccess() {
+    if (success) {
       quoteForm.hidden = true;
       success.hidden = false;
-      success.querySelector("h3").focus?.();
       const heading = success.querySelector("h3");
       if (heading) {
         heading.setAttribute("tabindex", "-1");
         heading.focus();
       }
     } else if (status) {
-      status.textContent = message;
+      status.textContent = "Thanks, we got your request and will be in touch soon.";
     }
   }
 }
