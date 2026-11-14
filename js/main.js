@@ -64,10 +64,6 @@ if (menuToggle && siteNav) {
   });
 }
 
-document.querySelectorAll("[data-placeholder-link]").forEach((link) => {
-  link.addEventListener("click", (event) => event.preventDefault());
-});
-
 const callDock = document.querySelector(".call-dock");
 const quoteForm = document.querySelector("#quote-form");
 
@@ -93,6 +89,55 @@ if (reduceMotion || !("IntersectionObserver" in window)) {
     { threshold: 0.14, rootMargin: "0px 0px -8% 0px" }
   );
   reveals.forEach((el) => observer.observe(el));
+}
+
+if (!reduceMotion) {
+  const parallaxNodes = document.querySelectorAll("[data-parallax]");
+  const hero = document.querySelector(".hero");
+  const steps = document.querySelector(".steps");
+  let ticking = false;
+
+  const updateMotion = () => {
+    const root = document.documentElement;
+    const max = root.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? window.scrollY / max : 0;
+    root.style.setProperty("--scroll-p", progress.toFixed(4));
+    const wide = window.innerWidth >= 760;
+
+    if (hero) {
+      const y = wide ? Math.min(window.scrollY, hero.offsetHeight) * 0.16 : 0;
+      hero.style.setProperty("--hero-y", `${y.toFixed(1)}px`);
+    }
+
+    if (steps) {
+      const rect = steps.getBoundingClientRect();
+      const view = window.innerHeight;
+      const amount = (view * 0.92 - rect.top) / (view * 0.55);
+      steps.style.setProperty("--steps-p", Math.min(1, Math.max(0, amount)).toFixed(3));
+    }
+
+    if (wide) {
+      parallaxNodes.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const speed = Number(el.dataset.parallax) || 0.06;
+        const shift = (rect.top - window.innerHeight * 0.5) * speed * -0.2;
+        el.style.setProperty("--py", `${shift.toFixed(1)}px`);
+      });
+    }
+  };
+
+  const requestTick = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      updateMotion();
+      ticking = false;
+    });
+  };
+
+  window.addEventListener("scroll", requestTick, { passive: true });
+  window.addEventListener("resize", requestTick);
+  updateMotion();
 }
 
 const lightbox = document.querySelector("#lightbox");

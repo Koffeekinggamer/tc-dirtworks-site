@@ -40,8 +40,7 @@ Leave it as an empty string to keep the mailto demo.
 
 ## Still needed from the client
 
-- Logo, to replace the text wordmark
 - Project photos, to replace the empty gallery frames
 - Real customer reviews. Do not invent testimonials.
-- Social profile URLs. Facebook and Instagram links are `href="#"` placeholders.
+- Any additional social profile, if one is added later. Facebook is the only link.
 - A live form endpoint, if email-via-mailto is not enough
