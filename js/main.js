@@ -153,7 +153,7 @@ document.querySelectorAll(".shot").forEach((shot) => {
       lightboxPhoto.src = photo.currentSrc || photo.src;
       lightboxPhoto.alt = photo.alt;
     }
-    lightboxCopy.textContent = "Placeholder image only. This is not a finished T. C. Dirtworks project.";
+    lightboxCopy.textContent = "This is not a finished T. C. Dirtworks project.";
     if (typeof lightbox.showModal === "function") lightbox.showModal();
     else lightbox.setAttribute("open", "");
   });
