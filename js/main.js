@@ -143,6 +143,7 @@ if (!reduceMotion) {
 const lightbox = document.querySelector("#lightbox");
 const lightboxCopy = document.querySelector("#lightbox-copy");
 const lightboxPhoto = document.querySelector("#lightbox-photo");
+const lightboxTitle = document.querySelector("#lightbox-title");
 const lightboxClose = document.querySelector("#lightbox-close");
 
 document.querySelectorAll(".shot").forEach((shot) => {
@@ -153,7 +154,8 @@ document.querySelectorAll(".shot").forEach((shot) => {
       lightboxPhoto.src = photo.currentSrc || photo.src;
       lightboxPhoto.alt = photo.alt;
     }
-    lightboxCopy.textContent = "This is not a finished T. C. Dirtworks project.";
+    if (lightboxTitle) lightboxTitle.textContent = shot.dataset.title || "Project photo";
+    lightboxCopy.textContent = shot.dataset.caption || "";
     if (typeof lightbox.showModal === "function") lightbox.showModal();
     else lightbox.setAttribute("open", "");
   });
