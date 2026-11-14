@@ -2,9 +2,17 @@
 
 Proof-of-concept marketing site for T. C. Dirtworks, built by ZarSeb Enterprises. Static HTML, CSS, and JavaScript. No build step.
 
-Preview: [https://koffeekinggamer.github.io/tc-dirtworks-site/](https://koffeekinggamer.github.io/tc-dirtworks-site/)
+Preview URL (once Pages is on): [https://koffeekinggamer.github.io/tc-dirtworks-site/](https://koffeekinggamer.github.io/tc-dirtworks-site/)
 
-Pushes to `main` publish the site with `.github/workflows/pages.yml`. There is no `CNAME`.
+Publish from the `main` branch, folder `/` (root). Do not add a `CNAME`. The domain `tcdirtworks.com` should stay unpointed until the client asks for it.
+
+The agent token cannot create the Pages site (`POST /repos/.../pages` returns 403, resource not accessible by integration). Turn it on once in the repository:
+
+1. Settings → Pages
+2. Build and deployment → Deploy from a branch
+3. Branch `main`, folder `/ (root)`, then Save
+
+After that, this URL serves the files in the repository root. No build step.
 
 Open locally with any static server:
 
