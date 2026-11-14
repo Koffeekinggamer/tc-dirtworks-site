@@ -4,6 +4,8 @@ Proof-of-concept marketing site for T. C. Dirtworks, built by ZarSeb Enterprises
 
 Preview: [https://koffeekinggamer.github.io/tc-dirtworks-site/](https://koffeekinggamer.github.io/tc-dirtworks-site/)
 
+Pushes to `main` publish the site with `.github/workflows/pages.yml`. There is no `CNAME`.
+
 Open locally with any static server:
 
 ```sh
