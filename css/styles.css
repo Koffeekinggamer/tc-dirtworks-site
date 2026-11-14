@@ -985,6 +985,10 @@ html.is-compact .logo {
   margin: 0.2rem 0 0.55rem;
 }
 
+#form-success:has(#quote-thanks:target) {
+  display: block;
+}
+
 .form-success p:last-of-type {
   margin-bottom: 1rem;
   color: var(--muted);
