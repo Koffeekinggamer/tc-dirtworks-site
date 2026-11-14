@@ -1221,18 +1221,29 @@ dialog::backdrop {
 }
 
 .marquee {
-  overflow: clip;
+  overflow: hidden;
+  width: 100%;
   background: var(--ink);
   color: #f6f3ee;
   border-block: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px var(--ink);
+  contain: paint;
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 .marquee-track {
   display: flex;
-  gap: 2.2rem;
   width: max-content;
   padding: 0.85rem 0;
-  animation: drift 38s linear infinite;
+  animation: drift 160s linear infinite;
+}
+
+.marquee-group {
+  display: flex;
+  flex: none;
+  gap: 2.2rem;
+  padding-right: 2.2rem;
 }
 
 .marquee span {
