@@ -491,7 +491,7 @@ html.is-compact .logo {
 
 .hero-parallax {
   position: absolute;
-  inset: -28%;
+  inset: -6%;
   transform: translate3d(0, var(--hero-y, 0px), 0);
 }
 
@@ -504,15 +504,15 @@ html.is-compact .logo {
   min-width: 100%;
   min-height: 100%;
   object-fit: cover;
-  object-position: 62% 56%;
+  object-position: 64% 78%;
   background: #1c1916;
   transform-origin: center center;
   animation: kenburns 32s ease-in-out infinite alternate;
 }
 
 @keyframes kenburns {
-  from { transform: scale(1.18); }
-  to { transform: scale(1.3); }
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
 }
 
 .stamp {
@@ -554,10 +554,6 @@ html.is-compact .logo {
     top: 0.55rem;
     right: 0.55rem;
     bottom: auto;
-  }
-
-  .hero-photo {
-    object-position: 48% 46%;
   }
 }
 
@@ -1453,8 +1449,9 @@ dialog::backdrop {
 @media (min-width: 960px) {
   .hero {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    min-height: clamp(520px, calc(100vh - var(--header-max)), 900px);
-    min-height: clamp(520px, calc(100svh - var(--header-max)), 900px);
+    /* Cap the row so the 16:9 field photo can keep the whole machine in frame. */
+    min-height: min(clamp(520px, calc(100vh - var(--header-max)), 900px), 38vw);
+    min-height: min(clamp(520px, calc(100svh - var(--header-max)), 900px), 38vw);
     max-height: 920px;
   }
 
@@ -1489,6 +1486,13 @@ dialog::backdrop {
 }
 
 @media (max-width: 959px) {
+  .hero-figure {
+    height: auto;
+    aspect-ratio: 3 / 2;
+    min-height: 220px;
+    max-height: 26rem;
+  }
+
   .menu-toggle {
     display: inline-flex;
   }
