@@ -13,4 +13,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://koffeekinggamer.github.io/tc-dirtworks-site/sitemap.xml
+Sitemap: https://tcdirtworks.com/sitemap.xml

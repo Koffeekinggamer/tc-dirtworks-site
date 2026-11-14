@@ -2,9 +2,9 @@
 
 Proof-of-concept marketing site for T. C. Dirtworks, built by ZarSeb Enterprises. Static HTML, CSS, and JavaScript. No build step.
 
-Preview URL (once Pages is on): [https://koffeekinggamer.github.io/tc-dirtworks-site/](https://koffeekinggamer.github.io/tc-dirtworks-site/)
+Live site: [https://tcdirtworks.com/](https://tcdirtworks.com/)
 
-Publish from the `main` branch, folder `/` (root). Do not add a `CNAME`. The domain `tcdirtworks.com` should stay unpointed until the client asks for it.
+Publish from the `main` branch, folder `/` (root). The `CNAME` file sets the GitHub Pages domain to `tcdirtworks.com`.
 
 The agent token cannot create the Pages site (`POST /repos/.../pages` returns 403, resource not accessible by integration). Turn it on once in the repository:
 
@@ -24,7 +24,7 @@ Then visit `http://127.0.0.1:8080`.
 
 ## Domain
 
-Do not add a `CNAME` or otherwise point `tcdirtworks.com` from this repository until the client is ready. GitHub Pages is serving the preview from `main` at the root of the repository.
+GitHub Pages serves this site at `https://tcdirtworks.com`. DNS for the apex and `www` is in Cloudflare and is not managed from this repository. Do not change MX records.
 
 ## Quote form
 
