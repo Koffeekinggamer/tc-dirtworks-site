@@ -26,12 +26,14 @@
   --ink: #141311;
   --muted: #5c574f;
   --line: #e4dfd6;
-  --accent: #7a3e12;
+  --clay: #7a3e12;
+  --accent: var(--clay);
+  --charcoal: #0c0b0a;
   --accent-soft: #f6eadf;
   --dark: #121110;
   --muted-on-dark: #cfc8be;
-  --header-max: 5rem;
-  --header-min: 3.7rem;
+  --header-max: 6.5rem;
+  --header-min: 4.5rem;
   --header-h: var(--header-max);
   --container: 1240px;
   --container-wide: 1480px;
@@ -133,7 +135,7 @@ a {
 }
 
 .section {
-  padding-block: clamp(3.25rem, 6vw, 6.75rem);
+  padding-block: clamp(2.4rem, 4vw, 4.25rem);
 }
 
 section[id] {
@@ -290,14 +292,14 @@ html.is-compact .site-header {
 
 .logo {
   display: block;
-  width: 3.35rem;
+  width: 4.5rem;
   height: auto;
   background: transparent;
   transition: width 0.28s var(--ease);
 }
 
 html.is-compact .logo {
-  width: 2.45rem;
+  width: 3.25rem;
 }
 
 .footer-logo {
@@ -452,32 +454,38 @@ html.is-compact .logo {
   background: #c9bfb2;
 }
 
-.hero-parallax,
 .hero-parallax picture {
+  position: absolute;
+  inset: 0;
   display: block;
+  width: 100%;
   height: 100%;
 }
 
 .hero-parallax {
   position: absolute;
-  inset: -12% 0;
+  inset: -28%;
   transform: translate3d(0, var(--hero-y, 0px), 0);
 }
 
 .hero-photo {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+  min-width: 100%;
+  min-height: 100%;
   object-fit: cover;
   object-position: 46% 42%;
-  background: #c9bfb2;
-  transform: scale(1.08);
+  background: #1c1916;
+  transform-origin: center center;
   animation: kenburns 32s ease-in-out infinite alternate;
 }
 
 @keyframes kenburns {
-  from { transform: scale(1.06) translate3d(0, 0, 0); }
-  to { transform: scale(1.16) translate3d(-1.6%, -1.2%, 0); }
+  from { transform: scale(1.18); }
+  to { transform: scale(1.3); }
 }
 
 .stamp {
@@ -538,13 +546,21 @@ html.is-compact .logo {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
-  margin: 0;
+  width: min(var(--container), calc(100% - var(--gutter) * 2));
+  margin: 0 auto;
   padding: 0;
   list-style: none;
 }
 
 .trust-list li {
-  padding: 1.25rem 0.9rem 1.35rem 0;
+  min-width: 0;
+  padding: 1.35rem 1rem;
+}
+
+.trust-note a {
+  color: #fff;
+  font-weight: 600;
+  text-underline-offset: 0.15em;
 }
 
 .trust-value {
@@ -800,36 +816,37 @@ html.is-compact .logo {
 /* Estimate */
 
 .estimate {
-  position: relative;
-  overflow: hidden;
-  background: var(--dark);
+  background: var(--charcoal);
   color: #f6f3ee;
-}
-
-.estimate::before {
-  content: "";
-  position: absolute;
-  inset: -12% 0 auto;
-  height: 40%;
-  background: radial-gradient(circle at 20% 40%, rgba(228, 196, 164, 0.16), transparent 55%);
-  transform: translate3d(0, var(--py, 0px), 0);
-  pointer-events: none;
+  padding-block: clamp(1.75rem, 3.2vw, 3rem);
 }
 
 .estimate-grid {
   position: relative;
   display: grid;
+  align-items: stretch;
+  gap: clamp(1.25rem, 2.4vw, 2.5rem);
 }
 
 .estimate-intro {
   display: grid;
-  align-content: start;
-  gap: 1rem;
-  padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3.5rem);
+  align-content: center;
+  gap: 0.85rem;
+  padding: 0.25rem 0;
 }
 
 .estimate-intro .eyebrow {
-  color: #e4c4a4;
+  color: #e8c4ae;
+  margin-bottom: 0;
+}
+
+.estimate-intro h2::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  margin-top: 0.75rem;
+  background: var(--clay);
 }
 
 .estimate-intro .lede {
@@ -845,21 +862,31 @@ html.is-compact .logo {
 }
 
 .estimate-intro a:not(.btn):not(.estimate-phone) {
-  color: #fff;
+  color: #d9d3cb;
 }
 
 .estimate-form-wrap {
-  background: var(--surface);
-  color: var(--ink);
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem);
+  background: #f6f3ee;
+  color: #141311;
+  padding: clamp(1.15rem, 2vw, 1.75rem);
 }
 
-.demo-note,
+.estimate .req {
+  color: var(--clay);
+}
+
+.estimate-form-wrap input,
+.estimate-form-wrap select {
+  border: 1px solid #d5d0c8;
+  background: #fff;
+  color: #141311;
+}
+
 .form-success {
-  margin: 0 0 1.15rem;
-  padding: 0.9rem 1rem;
-  border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .form-success h3 {
@@ -967,6 +994,23 @@ select:focus-visible {
   margin-top: 0.35rem;
 }
 
+.form-helper {
+  margin: 0.7rem 0 0;
+  color: #5c574f;
+  font-size: 0.85rem;
+}
+
+.estimate .form-actions .btn {
+  background: var(--clay);
+  border-color: var(--clay);
+  color: #fff;
+}
+
+.estimate .form-actions .btn:hover {
+  background: #633210;
+  border-color: #633210;
+}
+
 .form-actions .btn,
 .form-success .btn {
   width: 100%;
@@ -975,7 +1019,7 @@ select:focus-visible {
 /* Footer */
 
 .site-footer {
-  background: #0c0b0a;
+  background: var(--charcoal);
   color: #f3f1ec;
   padding-block: clamp(2.5rem, 5vw, 3.75rem) 1.5rem;
 }
@@ -1026,22 +1070,23 @@ select:focus-visible {
   gap: 0.5rem;
 }
 
-.social a {
+.footer-facebook {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: none;
+  gap: 0.45rem;
+  color: var(--muted-on-dark);
+  font-weight: 400;
+  text-underline-offset: 0.15em;
 }
 
-.social a:hover {
-  border-color: #e4c4a4;
+.footer-facebook svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: currentColor;
+}
+
+.footer-facebook:hover {
+  color: #fff;
 }
 
 .legal {
@@ -1272,11 +1317,10 @@ dialog::backdrop {
   }
 
   .trust-list li {
-    padding: 1.5rem 1.25rem 1.6rem 0;
+    padding: 1.5rem 1.15rem;
   }
 
   .trust-list li + li {
-    padding-left: 1.25rem;
     border-left: 1px solid rgba(255, 255, 255, 0.12);
   }
 
@@ -1413,6 +1457,19 @@ dialog::backdrop {
 }
 
 @media (max-width: 760px) {
+  :root {
+    --header-max: 4.75rem;
+    --header-min: 3.85rem;
+  }
+
+  .logo {
+    width: 3rem;
+  }
+
+  html.is-compact .logo {
+    width: 2.5rem;
+  }
+
   .header-phone {
     display: none;
   }
@@ -1502,7 +1559,7 @@ dialog::backdrop {
   }
 }
 
-@media (max-width: 1199px) {
+@media (max-width: 1399px) {
   .js .card-grid li:nth-child(n) .card,
   .js .reveal:nth-of-type(n) .section-head {
     transform: translate3d(0, 16px, 0);

@@ -105,7 +105,7 @@ if (!reduceMotion) {
     const wide = window.innerWidth >= 760;
 
     if (hero) {
-      const y = wide ? Math.min(window.scrollY, hero.offsetHeight) * 0.16 : 0;
+      const y = wide ? Math.min(24, window.scrollY * 0.06) : 0;
       hero.style.setProperty("--hero-y", `${y.toFixed(1)}px`);
     }
 
