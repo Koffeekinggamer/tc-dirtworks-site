@@ -798,13 +798,6 @@ html.is-compact .logo {
   object-fit: cover;
 }
 
-.shot span {
-  position: relative;
-  z-index: 1;
-  padding: 0.28rem 0.45rem;
-  background: rgba(12, 11, 10, 0.62);
-}
-
 .shot:hover {
   border-color: var(--accent);
   transform: translateY(-2px);
