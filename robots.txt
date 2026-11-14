@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://koffeekinggamer.github.io/tc-dirtworks-site/sitemap.xml
