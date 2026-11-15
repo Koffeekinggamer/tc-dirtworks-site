@@ -141,6 +141,8 @@ const lightboxCopy = document.querySelector("#lightbox-copy");
 const lightboxPhoto = document.querySelector("#lightbox-photo");
 const lightboxTitle = document.querySelector("#lightbox-title");
 const lightboxClose = document.querySelector("#lightbox-close");
+const projectGallery = document.querySelector("#project-gallery");
+const galleryMore = document.querySelector("#gallery-more");
 
 document.querySelectorAll(".shot").forEach((shot) => {
   shot.addEventListener("click", () => {
@@ -162,6 +164,21 @@ if (lightbox && lightboxClose) {
   lightbox.addEventListener("click", (event) => {
     if (event.target === lightbox) lightbox.close();
   });
+}
+
+if (projectGallery && galleryMore) {
+  const hiddenCount = projectGallery.querySelectorAll("li:nth-child(n + 7)").length;
+  if (!hiddenCount) {
+    galleryMore.hidden = true;
+  } else {
+    galleryMore.addEventListener("click", () => {
+      projectGallery.classList.add("is-expanded");
+      galleryMore.setAttribute("aria-expanded", "true");
+      galleryMore.hidden = true;
+      const firstExtra = projectGallery.querySelector("li:nth-child(7) .shot");
+      if (firstExtra) firstExtra.focus();
+    });
+  }
 }
 
 const rules = {
